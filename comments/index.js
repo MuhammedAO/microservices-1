@@ -29,7 +29,7 @@ app.post('/posts/:id/comments', (req, res) => {
 		content
 	})
 
-	commentsByPostId[req.params.id] = comments
+	commentByPostId[req.params.id] = comments
 
 	res.status(201).send(comments)
 })
