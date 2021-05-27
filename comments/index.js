@@ -40,6 +40,12 @@ app.post("/posts/:id/comments", async (req, res) => {
   res.status(201).send(comments)
 })
 
+app.post('/events', (req, res) => {
+  console.log('Recieved Event:', req.body.type)
+
+  res.send({})
+})
+
 app.listen(5000, () => {
   console.log("Listening on 5000")
 })
