@@ -8,13 +8,7 @@ app.use(cors())
 
 const posts = {}
 
-app.get("/posts", (req, res) => {
-  res.send(posts)
-})
-
-app.post("/events", (req, res) => {
-  const { type, data } = req.body
-
+const handleEvent = (type, data) => {
   if (type === "PostCreated") {
     const { id, title } = data
 
@@ -28,7 +22,6 @@ app.post("/events", (req, res) => {
 
     post.comments.push({ id, content, status })
   }
-  console.log(posts)
 
   if (type === "CommentUpdated") {
     const { id, content, postId, status } = data
@@ -39,12 +32,30 @@ app.post("/events", (req, res) => {
 
     comment.status = status
     comment.content = content
-    
   }
+}
+
+app.get("/posts", (req, res) => {
+  res.send(posts)
+})
+
+app.post("/events", (req, res) => {
+  const { type, data } = req.body
+
+  handleEvent(type, data)
 
   res.send({})
 })
 
-app.listen(8000, () => {
+app.listen(8000, async () => {
   console.log("Listening on 8000")
+
+  const res = await axios.get("http://localhost:7000/events")
+  for (const event of res.data) {
+    const { type, data } = event
+
+    console.log("Processing event:", type)
+
+    handleEvent(type, data)
+  }
 })
